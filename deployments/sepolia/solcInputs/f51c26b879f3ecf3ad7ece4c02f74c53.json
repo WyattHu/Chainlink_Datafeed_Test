@@ -1,0 +1,39 @@
+{
+  "language": "Solidity",
+  "sources": {
+    "@chainlink/contracts/src/v0.8/shared/interfaces/AggregatorV3Interface.sol": {
+      "content": "// SPDX-License-Identifier: MIT\npragma solidity ^0.8.0;\n\n// solhint-disable-next-line interface-starts-with-i\ninterface AggregatorV3Interface {\n  function decimals() external view returns (uint8);\n\n  function description() external view returns (string memory);\n\n  function version() external view returns (uint256);\n\n  function getRoundData(\n    uint80 _roundId\n  ) external view returns (uint80 roundId, int256 answer, uint256 startedAt, uint256 updatedAt, uint80 answeredInRound);\n\n  function latestRoundData()\n    external\n    view\n    returns (uint80 roundId, int256 answer, uint256 startedAt, uint256 updatedAt, uint80 answeredInRound);\n}\n"
+    },
+    "contracts/ChainlinkDatafeedTest.sol": {
+      "content": "// SPDX-License-Identifier: MIT\npragma solidity ^0.8.19;\nimport {AggregatorV3Interface} from \"@chainlink/contracts/src/v0.8/shared/interfaces/AggregatorV3Interface.sol\";\n\n\ncontract ChainlinkDatafeedTest {\n    /*\n     *  Events\n     */\n\n    /*\n     *  Constants\n     */\n\n    /*\n     *  Storage\n     */\n    address immutable i_owner;\n    AggregatorV3Interface immutable dataFeed;\n    /*\n     *  Modifiers\n     */\n\n    modifier onlyOwner() {\n        require(msg.sender == i_owner);\n        _;\n    }\n\n    /// @dev Fallback function allows to deposit ether.\n    receive() external payable {}\n\n    fallback() external {}\n\n    /*\n     * Public functions\n     */\n    /// @dev Contract constructor .\n    constructor(address AggregatorV3){\n        dataFeed = AggregatorV3Interface(AggregatorV3);\n        i_owner = msg.sender;\n    }\n\n    function getData() public view returns(int256){\n        (,int answer,,,) = dataFeed.latestRoundData();\n        return answer;\n    }\n\n    /// @dev Returns owner.\n    /// @return i_owner address.\n    function getOwner() public view returns (address) {\n        return i_owner;\n    }\n\n}\n"
+    }
+  },
+  "settings": {
+    "evmVersion": "paris",
+    "optimizer": {
+      "enabled": false,
+      "runs": 200
+    },
+    "outputSelection": {
+      "*": {
+        "*": [
+          "abi",
+          "evm.bytecode",
+          "evm.deployedBytecode",
+          "evm.methodIdentifiers",
+          "metadata",
+          "devdoc",
+          "userdoc",
+          "storageLayout",
+          "evm.gasEstimates"
+        ],
+        "": [
+          "ast"
+        ]
+      }
+    },
+    "metadata": {
+      "useLiteralContent": true
+    }
+  }
+}
